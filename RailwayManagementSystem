@@ -55,6 +55,7 @@ def create_acc():
   login()
 
 
+# login window
 def login():
   global a
   try:
@@ -64,8 +65,86 @@ def login():
     j = cur.fetchone()
     print(f'welcome back j[0]!')
     main_menu()
+  except:
+    print('your account was not found')
+    print('you can: \n'
+          '1.try logging in again \n'
+          '2.create new account')
+    ch = input('enter your choice: ')
+    if ch == '1':
+      login()
+    elif ch == '2':
+      create_acc()
+    else:
+      print('invalid choice!')
+      x1 = input('exit the portal? (Y/N)')
+      if x1.upper() == 'N':
+        login_menu()
+      else:
+        exit()
 
+
+# main menu creation
+def main_menu():
+  print('what would you like to do today? \n'
+        '1.purchase a ticket \n'
+        '2.check ticket status \n'
+        '3.request a refund \n'
+        '4.account settings \n'
+        '5.logout \n'
+        '6.exit')
+  ch1 = int(input('enter your choice: '))
+  if ch1 == 1:
+    buy_ticket()
+  elif ch1 == 2:
+    show_ticket()
+  elif ch1 == 3:
+    cancel_ticket()
+  elif ch1 == 4:
+    account()
+  elif ch1 == 5:
+    login_menu()
+  else:
+    exit()
+
+
+def back_to_main_menu():
+  x3 = input('return to the main menu? (Y/N)')
+  if x3.upper() == 'Y':
+    print('returning to main menu...')
+    main_menu()
+
+
+#buying ticket
+def buy_ticket():
+  print('enter details for your journy: ')
+  i = a
+  pnr = randint(100000, 1000000)
+  print(f'your PNR is {pnr}')
+  train = input('enter your tarin name: ')
+  doj = input('enter the date of your  journy (YYYY-MM-DD): ')
+  fr = input('enter the departing station: ')
+  to = input('enter the destination station: ')
+  cur.execute(f'insert into tickets values({i}, {pnr}, '{train}', '{doj}', '{fr}', '{to}');')
+  back_to_main_menu()
+
+
+# ticket checking
+def show_tickets():
+  try:
+    pnr = int(input('enter your PNR: '))
+    cur.execute(f'select * from tickets where pnr = {pnr};')
+    j = cur.fetchone()
+    if j[0] == a:
+      print(f'train {j[2]} \n date of journy {j[3]} \n from {j[4]} \n to {j[5]}')
+      back_to_main_menu()
+    else:
+      print('unauthorized! \n your ID does not match the pnr of ticket.')
+      back_to_main_menu()
+  except:
+    ticket_not_found()
+
+    
   
-
 
 
