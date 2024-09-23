@@ -144,7 +144,71 @@ def show_tickets():
   except:
     ticket_not_found()
 
-    
-  
+
+# canceling tickets
+def cancel_ticket():
+  try:
+    pnr = int(input('enter the pnr number of the ticket: '))
+    cur.execute(f'select id, pnr, train from tickets where pnr = {pnr};')
+    j = cur.fetchone()
+    if j[0] == a:
+      print(f'pnr: {j[1]} \n train: {j[2]}')
+      x4 = input('do you really want to cancel this ticket? (Y/N)')
+      if x4.upper == 'Y':
+        cur.execute(f'delete * from tickets where pnr = {pnr};')
+        print('you will be refunded shortly!')
+        back_to_main_menu()
+      else:
+        back_to_main_menu()
+    else:
+      print('unauthorized! \n your ID does not match the pnr of ticket.')
+      back_to_main_menu()
+  except:
+    ticket_not_found()
 
 
+# if ticket is not found
+def ticket_not_found():
+  print('Ticket not found!')
+  print('You can: \n '
+        '1.try entering your pnr number again \n'
+        '2.purchase a ticket \n'
+        '3.return to main menu \n'
+        '4.exit')
+  ch = int(input('enter your choice: '))
+  if ch == 1:
+    show_ticket()
+  elif ch == 2:
+    buy_ticket()
+  elif ch == 3:
+    print('returning to main menu...')
+    main_menu()
+  else:
+    exit()
+
+
+# Account settings
+def account():
+  print('do you want to: \n'
+        '1.show account details \n'
+        '2.delete account')
+  ch = int(input('enter your choice: '))
+  if ch == 1:
+    cur.execute(f'select * from account where ID = {a};')
+    j = cur.fetchone()
+    print(f'ID: {j[0]} \n name: {j[2]} \n gender: {j[3]} \n age: {j[4]} \n dob: {j[5]} \n phone number: {j[6]}')
+    back_to_main_menu()
+  elif ch == 2:
+    x6 = input('Do you want to request for refund(s) for your ticket(s) too? (Y/N)')
+    if x6.upper() == 'Y':
+      cur.execute(f'delete * from ticket where id = {a};')
+      print('you will be refunded shortly!')
+      cur.execute(f'delete * from account where id = {a};')
+      print('account succsessfully deleted!')
+      login_menu()
+    else:
+      back_to_main_menu()
+
+
+# calling the first function
+login_menu()
